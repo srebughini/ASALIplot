@@ -9,3 +9,7 @@ Repo to develop plotting class
 ```bash
 sudo apt-get install libplplot-dev plplot-driver-cairo
 ```
+
+## Things to do
+* Add label when setData(x,y,legend)
+* Add asaliplot->legend()

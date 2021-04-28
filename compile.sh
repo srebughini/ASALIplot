@@ -1,3 +1,3 @@
 rm -f asali.sh
-g++ main.cpp -o asali.sh -I/usr/include/plplot -lplplot -lplplotcxx
+g++ main.cpp plotInterface.cpp -o asali.sh -I/usr/include/plplot -I. -lplplot -lplplotcxx
 ./asali.sh
