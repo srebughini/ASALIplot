@@ -9,8 +9,8 @@ namespace ASALI
                                      xmin_(DBL_MAX),
                                      ymax_(DBL_MIN),
                                      ymin_(DBL_MAX),
-                                     text_color_({255,255,235}),
-                                     bg_color_({0,0,0})
+                                     text_color_({255, 255, 235}),
+                                     bg_color_({0, 0, 0})
 
     {
     }
@@ -100,7 +100,7 @@ namespace ASALI
     {
         x_.push_back(x);
         y_.push_back(y);
-        legend_text_.push_back(label);
+        legend_text_.push_back(label.c_str());
 
         nlegend_ = x_.size();
 
@@ -171,15 +171,15 @@ namespace ASALI
 
         for (unsigned int i = 0; i < nlegend_; i++)
         {
-            text_colors_[i] = 1 + (i % 8);
-            line_colors_[i] = 1 + (i % 8);
-            symbol_colors_[i] = 1 + (i % 8);
+            text_colors_[i] = 1;
+            line_colors_[i] = i + 2;
+            symbol_colors_[i] = i + 2;
             line_styles_[i] = 1;
             line_widths_[i] = 1.0;
             symbol_scales_[i] = 1.;
             symbol_numbers_[i] = 4;
             legend_symbols_[i] = "#(728)";
-            opt_array_[i] = PL_LEGEND_LINE | PL_LEGEND_SYMBOL;
+            opt_array_[i] = PL_LEGEND_LINE;
         }
     }
 
@@ -241,10 +241,11 @@ namespace ASALI
             PLINT opt_array[nlegend_];
             this->convertToPLINT(opt_array_, opt_array);
 
-            char *texts[nlegend_];
-            this->convertToChar(legend_text_, texts);
+            //char *texts[nlegend_];
+            //this->convertToChar(legend_text_, texts);
+
             PLINT text_colors[nlegend_];
-            this->convertToPLINT(opt_array_, opt_array);
+            this->convertToPLINT(text_colors_, text_colors);
 
             PLINT line_colors[nlegend_];
             this->convertToPLINT(line_colors_, line_colors);
@@ -253,8 +254,8 @@ namespace ASALI
             PLFLT line_widths[nlegend_];
             this->convertToPLFLT(line_widths_, line_widths);
 
-            char *symbols[nlegend_];
-            this->convertToChar(legend_symbols_, symbols);
+            //char *symbols[nlegend_];
+            //this->convertToChar(legend_symbols_, symbols);
             PLINT symbol_colors[nlegend_];
             this->convertToPLINT(symbol_colors_, symbol_colors);
             PLINT symbol_numbers[nlegend_];
@@ -262,30 +263,44 @@ namespace ASALI
             PLFLT symbol_scales[nlegend_];
             this->convertToPLFLT(symbol_scales_, symbol_scales);
 
-            pls->legend(&legend_width, &legend_height, opt_base_, legend_position_, 0.05, 0.05,
-                        0.1, 15, 1, 1, 0, 0,
-                        nlegend_, opt_array, 1.0, 1.0, 2.0,
-                        1., text_colors, (const char **)texts,
-                        NULL, NULL, NULL, NULL,
-                        line_colors, line_styles, line_widths,
-                        symbol_colors, symbol_scales, symbol_numbers, (const char **)symbols);
+
+            for (unsigned int i=0;i<nlegend_;i++)
+            {
+                std::cout << legend_text_[i] << std::endl;
+            }
+
+            pls->legend(&legend_width,              //p_legend_width
+                        &legend_height,             //p_legend_height
+                        opt_base_,                  //opt
+                        legend_position_,           //position
+                        0.0,                        //x
+                        0.0,                        //y
+                        0.1,                        //plot_width
+                        0,                          //bg_color
+                        0,                          //bb_color
+                        1,                          //bb_style
+                        0,                          //nrow
+                        0,                          //ncolumn
+                        nlegend_,                   //nlegend
+                        opt_array,                  //opt_array
+                        1.0,                        //text_offset
+                        1.0,                        //text_scale
+                        2.0,                        //text_spacing
+                        1.,                         //test_justification
+                        text_colors,                //text_colors
+                        legend_text_.data(),       //texts
+                        NULL,                       //box_colors
+                        NULL,                       //box_patterns
+                        NULL,                       //box_scales
+                        NULL,                       //box_line_widths
+                        line_colors,                //line_colors
+                        line_styles,                //line_styles
+                        line_widths,                //line_widths
+                        symbol_colors,              //symbol_colors
+                        symbol_scales,              //symbol_scales
+                        symbol_numbers,             //symbol_numbers
+                        legend_symbols_.data());    //symbols
         }
-
-        //char *text[nlegend_];
-        //char *sym[nlegend_];
-
-        // Plot legend
-        /*
-        if (is_legend_ == true)
-        {
-            pls->legend(&legend_width, &legend_height, opt_base_, legend_position_, 0.05, 0.05,
-                        0.1, 15, 1, 1, 0, 0,
-                        nlegend_, opt_array_, 1.0, 1.0, 2.0,
-                        1., text_colors_, (const char **)text,
-                        NULL, NULL, NULL, NULL,
-                        line_colors_, line_styles_, line_widths_,
-                        symbol_colors_, symbol_scales_, symbol_numbers_, (const char **)sym);
-        }*/
 
         delete pls;
     }

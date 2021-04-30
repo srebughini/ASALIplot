@@ -72,8 +72,8 @@ namespace ASALI
         PLFLT legend_width;
         PLFLT legend_height;
 
-        std::vector<std::string> legend_text_;
-        std::vector<std::string> legend_symbols_;
+        std::vector<const char *> legend_text_;
+        std::vector<const char *> legend_symbols_;
 
         std::vector<int> text_colors_;
         std::vector<int> line_colors_;
