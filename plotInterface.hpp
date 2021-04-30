@@ -26,18 +26,24 @@ namespace ASALI
     public:
         plotInterface();
 
-        void setData(std::vector<double> x, std::vector<double> y);
+        void setData(std::vector<double> x, std::vector<double> y, std::string label);
         void setXlimits(double xmin, double xmax);
         void setYlimits(double ymin, double ymax);
         void setXlabel(std::string xlabel);
         void setYlabel(std::string ylabel);
         void setTitle(std::string title);
+        void setTextColor(int r, int b, int g);
+        void setBackgroundColor(int r, int b, int g);
+        void setLegendPosition(const std::string inside_outside, const std::string left_right_center, const std::string top_bottom);
+        void legend();
         void show();
 
         virtual ~plotInterface();
 
     private:
-        void setSize(int nsize);
+        void convertToPLFLT(std::vector<double> v, PLFLT *p);
+        void convertToPLINT(std::vector<int> v, PLINT *p);
+        void convertToChar(std::vector<std::string> v, char **p);
 
         double minElement(const std::vector<double> v);
         double maxElement(const std::vector<double> v);
@@ -48,18 +54,41 @@ namespace ASALI
         plstream *pls;
 
         int nsize_;
+        int nlegend_;
 
         std::string xlabel_;
         std::string ylabel_;
         std::string title_;
 
+        bool is_legend_;
+
+        PLINT legend_position_;
+        PLINT opt_base_;
+
         PLFLT xmax_;
         PLFLT xmin_;
         PLFLT ymax_;
         PLFLT ymin_;
+        PLFLT legend_width;
+        PLFLT legend_height;
 
-        PLFLT *x_;
-        PLFLT *y_;
+        std::vector<std::string> legend_text_;
+        std::vector<std::string> legend_symbols_;
+
+        std::vector<int> text_colors_;
+        std::vector<int> line_colors_;
+        std::vector<int> line_styles_;
+        std::vector<int> symbol_colors_;
+        std::vector<int> symbol_numbers_;
+        std::vector<int> opt_array_;
+        std::vector<int> text_color_;
+        std::vector<int> bg_color_;
+
+        std::vector<double> line_widths_;
+        std::vector<double> symbol_scales_;
+
+        std::vector<std::vector<double>> x_;
+        std::vector<std::vector<double>> y_;
     };
 }
 #endif

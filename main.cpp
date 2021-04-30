@@ -6,19 +6,27 @@ int main(int argc, char **argv)
     double ymax = 100;
 
     std::vector<double> x(nsize);
-    std::vector<double> y(nsize);
+    std::vector<double> y1(nsize);
+    std::vector<double> y2(nsize);
+    std::vector<double> y3(nsize);
 
     for (unsigned int i = 0; i < nsize; i++)
     {
         x[i] = (double)(i) / (double)(nsize - 1);
-        y[i] = ymax * x[i] * x[i];
+        y1[i] = ymax * x[i] * x[i];
+        y2[i] = 2. * ymax * x[i] * x[i];
+        y3[i] = 0.25 * ymax * x[i] * x[i];
     }
     
     ASALI::plotInterface *asaliplot = new ASALI::plotInterface();
-    asaliplot->setData(x, y);
+    asaliplot->setData(x, y1, "rebu1");
+    asaliplot->setData(x, y2, "rebu2");
+    asaliplot->setData(x, y3, "rebu3");
     asaliplot->setXlabel("Time [s]");
     asaliplot->setYlabel("Temperature [K]");
     asaliplot->setTitle("Rebu is the best");
+    //asaliplot->setLegendPosition("outside", "right", "center");
+    //asaliplot->legend();
     asaliplot->show();
 
     delete asaliplot;

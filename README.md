@@ -11,5 +11,6 @@ sudo apt-get install libplplot-dev plplot-driver-cairo
 ```
 
 ## Things to do
-* Add label when setData(x,y,legend)
-* Add asaliplot->legend()
+* For asali we should select the background of asali light color
+* For asali we should select the text of asali dark color
+* Fix legend
