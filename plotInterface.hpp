@@ -34,7 +34,7 @@ namespace ASALI
         void setTitle(std::string title);
         void setTextColor(int r, int b, int g);
         void setBackgroundColor(int r, int b, int g);
-        void setLegendPosition(const std::string inside_outside, const std::string left_right_center, const std::string top_bottom);
+        void setLegendPosition(const std::string position);
         void legend();
         void show();
 
@@ -43,7 +43,6 @@ namespace ASALI
     private:
         void convertToPLFLT(std::vector<double> v, PLFLT *p);
         void convertToPLINT(std::vector<int> v, PLINT *p);
-        void convertToChar(std::vector<std::string> v, char **p);
 
         double minElement(const std::vector<double> v);
         double maxElement(const std::vector<double> v);
@@ -64,6 +63,8 @@ namespace ASALI
 
         PLINT legend_position_;
         PLINT opt_base_;
+        PLINT ncol_;
+        PLINT nrow_;
 
         PLFLT xmax_;
         PLFLT xmin_;
@@ -72,20 +73,16 @@ namespace ASALI
         PLFLT legend_width;
         PLFLT legend_height;
 
-        std::vector<const char *> legend_text_;
-        std::vector<const char *> legend_symbols_;
+        std::vector<std::string> legend_text_;
 
         std::vector<int> text_colors_;
         std::vector<int> line_colors_;
         std::vector<int> line_styles_;
-        std::vector<int> symbol_colors_;
-        std::vector<int> symbol_numbers_;
         std::vector<int> opt_array_;
         std::vector<int> text_color_;
         std::vector<int> bg_color_;
 
         std::vector<double> line_widths_;
-        std::vector<double> symbol_scales_;
 
         std::vector<std::vector<double>> x_;
         std::vector<std::vector<double>> y_;

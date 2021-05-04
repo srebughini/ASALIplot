@@ -5,6 +5,8 @@ namespace ASALI
     plotInterface::plotInterface() : is_legend_(false),
                                      legend_position_(PL_POSITION_TOP | PL_POSITION_OUTSIDE),
                                      opt_base_(PL_LEGEND_BACKGROUND | PL_LEGEND_BOUNDING_BOX),
+                                     ncol_(0),
+                                     nrow_(0),
                                      xmax_(DBL_MIN),
                                      xmin_(DBL_MAX),
                                      ymax_(DBL_MIN),
@@ -55,13 +57,13 @@ namespace ASALI
         return min;
     }
 
-    void plotInterface::setXlimits(double xmin, double xmax)
+    void plotInterface::setXlimits(double xmax, double xmin)
     {
         xmin_ = std::min(xmin, xmin_);
         xmax_ = std::max(xmax, xmax_);
     }
 
-    void plotInterface::setYlimits(double ymin, double ymax)
+    void plotInterface::setYlimits(double ymax, double ymin)
     {
         ymin_ = std::min(ymin, ymin_);
         ymax_ = std::max(ymax, ymax_);
@@ -100,7 +102,8 @@ namespace ASALI
     {
         x_.push_back(x);
         y_.push_back(y);
-        legend_text_.push_back(label.c_str());
+
+        legend_text_.push_back(label);
 
         nlegend_ = x_.size();
 
@@ -108,47 +111,51 @@ namespace ASALI
         this->setYlimits(this->maxElement(y), this->minElement(y));
     }
 
-    void plotInterface::setLegendPosition(const std::string inside_outside,
-                                          const std::string left_right_center,
-                                          const std::string top_bottom_center)
+    void plotInterface::setLegendPosition(const std::string position)
     {
-        PLINT pl_top_bottom_center = PL_POSITION_TOP;
-        if (top_bottom_center == "bottom")
+        if (position == "top")
         {
-            pl_top_bottom_center = PL_POSITION_BOTTOM;
+            legend_position_ = PL_POSITION_OUTSIDE | PL_POSITION_TOP;
+            ncol_ = nlegend_;
         }
-
-        PLINT pl_inside_outside = PL_POSITION_INSIDE;
-        if (inside_outside == "outside")
+        else if ( position == "bottom")
         {
-            pl_inside_outside = PL_POSITION_OUTSIDE;
+            legend_position_ = PL_POSITION_OUTSIDE | PL_POSITION_BOTTOM;
+            ncol_ = nlegend_;
         }
-
-        if (left_right_center == "left")
+        else if ( position == "left")
         {
-            if (top_bottom_center == "center")
-            {
-                legend_position_ = PL_POSITION_LEFT | pl_inside_outside;
-            }
-            else
-            {
-                legend_position_ = PL_POSITION_LEFT | pl_top_bottom_center | pl_inside_outside;
-            }
+            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_LEFT;
+            nrow_ = nlegend_;
         }
-        else if (left_right_center == "right")
+        else if ( position == "right")
         {
-            if (top_bottom_center == "center")
-            {
-                legend_position_ = PL_POSITION_RIGHT | pl_inside_outside;
-            }
-            else
-            {
-                legend_position_ = PL_POSITION_RIGHT | pl_top_bottom_center | pl_inside_outside;
-            }
+            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT;
+            nrow_ = nlegend_;
+        }
+        else if ( position == "left_top")
+        {
+            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_LEFT | PL_POSITION_TOP;
+            nrow_ = nlegend_;
+        }
+        else if ( position == "right_top")
+        {
+            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT | PL_POSITION_TOP;
+            nrow_ = nlegend_;
+        }        
+        else if ( position == "left_bottom")
+        {
+            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_LEFT | PL_POSITION_BOTTOM;
+            nrow_ = nlegend_;
+        }
+        else if ( position == "right_bottom")
+        {
+            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT | PL_POSITION_BOTTOM;
+            nrow_ = nlegend_;
         }
         else
         {
-            legend_position_ = pl_top_bottom_center | pl_inside_outside;
+            ncol_ = nlegend_;
         }
     }
 
@@ -162,23 +169,14 @@ namespace ASALI
         line_styles_.resize(nlegend_);
         line_widths_.resize(nlegend_);
 
-        legend_symbols_.resize(nlegend_);
-        symbol_colors_.resize(nlegend_);
-        symbol_numbers_.resize(nlegend_);
-        symbol_scales_.resize(nlegend_);
-
         opt_array_.resize(nlegend_);
 
         for (unsigned int i = 0; i < nlegend_; i++)
         {
             text_colors_[i] = 1;
             line_colors_[i] = i + 2;
-            symbol_colors_[i] = i + 2;
             line_styles_[i] = 1;
             line_widths_[i] = 1.0;
-            symbol_scales_[i] = 1.;
-            symbol_numbers_[i] = 4;
-            legend_symbols_[i] = "#(728)";
             opt_array_[i] = PL_LEGEND_LINE;
         }
     }
@@ -196,14 +194,6 @@ namespace ASALI
         for (unsigned int i = 0; i < v.size(); i++)
         {
             p[i] = v[i];
-        }
-    }
-
-    void plotInterface::convertToChar(std::vector<std::string> v, char **p)
-    {
-        for (unsigned int i = 0; i < v.size(); i++)
-        {
-            p[i] = const_cast<char *>(v[i].c_str());
         }
     }
 
@@ -241,9 +231,11 @@ namespace ASALI
             PLINT opt_array[nlegend_];
             this->convertToPLINT(opt_array_, opt_array);
 
-            //char *texts[nlegend_];
-            //this->convertToChar(legend_text_, texts);
-
+            std::vector<const char*> texts(nlegend_);
+            for (unsigned int i = 0; i < nlegend_; i++)
+            {
+                texts[i] = legend_text_[i].c_str();
+            }
             PLINT text_colors[nlegend_];
             this->convertToPLINT(text_colors_, text_colors);
 
@@ -254,33 +246,18 @@ namespace ASALI
             PLFLT line_widths[nlegend_];
             this->convertToPLFLT(line_widths_, line_widths);
 
-            //char *symbols[nlegend_];
-            //this->convertToChar(legend_symbols_, symbols);
-            PLINT symbol_colors[nlegend_];
-            this->convertToPLINT(symbol_colors_, symbol_colors);
-            PLINT symbol_numbers[nlegend_];
-            this->convertToPLINT(symbol_numbers_, symbol_numbers);
-            PLFLT symbol_scales[nlegend_];
-            this->convertToPLFLT(symbol_scales_, symbol_scales);
-
-
-            for (unsigned int i=0;i<nlegend_;i++)
-            {
-                std::cout << legend_text_[i] << std::endl;
-            }
-
             pls->legend(&legend_width,              //p_legend_width
                         &legend_height,             //p_legend_height
                         opt_base_,                  //opt
                         legend_position_,           //position
-                        0.0,                        //x
-                        0.0,                        //y
+                        0.05,                       //x
+                        0.05,                       //y
                         0.1,                        //plot_width
                         0,                          //bg_color
                         0,                          //bb_color
                         1,                          //bb_style
-                        0,                          //nrow
-                        0,                          //ncolumn
+                        nrow_,                      //nrow
+                        ncol_,                      //ncolumn
                         nlegend_,                   //nlegend
                         opt_array,                  //opt_array
                         1.0,                        //text_offset
@@ -288,7 +265,7 @@ namespace ASALI
                         2.0,                        //text_spacing
                         1.,                         //test_justification
                         text_colors,                //text_colors
-                        legend_text_.data(),       //texts
+                        texts.data(),               //texts
                         NULL,                       //box_colors
                         NULL,                       //box_patterns
                         NULL,                       //box_scales
@@ -296,10 +273,10 @@ namespace ASALI
                         line_colors,                //line_colors
                         line_styles,                //line_styles
                         line_widths,                //line_widths
-                        symbol_colors,              //symbol_colors
-                        symbol_scales,              //symbol_scales
-                        symbol_numbers,             //symbol_numbers
-                        legend_symbols_.data());    //symbols
+                        NULL,                       //symbol_colors
+                        NULL,                       //symbol_scales
+                        NULL,                       //symbol_numbers
+                        NULL);                      //symbols
         }
 
         delete pls;

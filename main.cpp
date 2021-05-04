@@ -19,13 +19,13 @@ int main(int argc, char **argv)
     }
     
     ASALI::plotInterface *asaliplot = new ASALI::plotInterface();
-    asaliplot->setData(x, y1, "a");
-    asaliplot->setData(x, y2, "b");
-    asaliplot->setData(x, y3, "c");
+    asaliplot->setData(x, y1, "rebu1");
+    asaliplot->setData(x, y2, "rebu2");
+    asaliplot->setData(x, y3, "rebu3");
     asaliplot->setXlabel("Time [s]");
     asaliplot->setYlabel("Temperature [K]");
     asaliplot->setTitle("Rebu is the best");
-    asaliplot->setLegendPosition("inside", "left", "top");
+    asaliplot->setLegendPosition("left");
     asaliplot->legend();
     asaliplot->show();
 
