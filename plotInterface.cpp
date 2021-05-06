@@ -2,17 +2,23 @@
 
 namespace ASALI
 {
-    plotInterface::plotInterface() : is_legend_(false),
-                                     legend_position_(PL_POSITION_TOP | PL_POSITION_OUTSIDE),
-                                     opt_base_(PL_LEGEND_BACKGROUND | PL_LEGEND_BOUNDING_BOX),
-                                     ncol_(0),
-                                     nrow_(0),
+    plotInterface::plotInterface() : xLabel_(""),
+                                    yLabel_(""),
+                                    title_(""),
+                                    outputFormat_("?"),
+    isLegend_(false),
+    isOnFile_(true),
+                                     legendPosition_(PL_POSITION_TOP | PL_POSITION_OUTSIDE),
+                                     optBase_(PL_LEGEND_BACKGROUND | PL_LEGEND_BOUNDING_BOX),
+                                     nCol_(0),
+                                     nRow_(0),
                                      xmax_(DBL_MIN),
                                      xmin_(DBL_MAX),
                                      ymax_(DBL_MIN),
                                      ymin_(DBL_MAX),
-                                     text_color_({255, 255, 235}),
-                                     bg_color_({0, 0, 0})
+                                     onScreenOutputFormats_({"xcairo", "wxwidgets", "qtwidget"}),
+                                     textColor_({255, 255, 235}),
+                                     bgColor_({0, 0, 0})
 
     {
     }
@@ -71,12 +77,12 @@ namespace ASALI
 
     void plotInterface::setXlabel(std::string xlabel)
     {
-        xlabel_ = xlabel;
+        xLabel_ = xlabel;
     }
 
     void plotInterface::setYlabel(std::string ylabel)
     {
-        ylabel_ = ylabel;
+        yLabel_ = ylabel;
     }
 
     void plotInterface::setTitle(std::string title)
@@ -86,16 +92,16 @@ namespace ASALI
 
     void plotInterface::setTextColor(int r, int b, int g)
     {
-        text_color_[0] = r;
-        text_color_[1] = b;
-        text_color_[2] = g;
+        textColor_[0] = r;
+        textColor_[1] = b;
+        textColor_[2] = g;
     }
 
     void plotInterface::setBackgroundColor(int r, int b, int g)
     {
-        bg_color_[0] = r;
-        bg_color_[1] = b;
-        bg_color_[2] = g;
+        bgColor_[0] = r;
+        bgColor_[1] = b;
+        bgColor_[2] = g;
     }
 
     void plotInterface::setData(std::vector<double> x, std::vector<double> y, std::string label)
@@ -103,9 +109,9 @@ namespace ASALI
         x_.push_back(x);
         y_.push_back(y);
 
-        legend_text_.push_back(label);
+        legendText_.push_back(label);
 
-        nlegend_ = x_.size();
+        nLegend_ = x_.size();
 
         this->setXlimits(this->maxElement(x), this->minElement(x));
         this->setYlimits(this->maxElement(y), this->minElement(y));
@@ -115,69 +121,89 @@ namespace ASALI
     {
         if (position == "top")
         {
-            legend_position_ = PL_POSITION_OUTSIDE | PL_POSITION_TOP;
-            ncol_ = nlegend_;
+            legendPosition_ = PL_POSITION_OUTSIDE | PL_POSITION_TOP;
+            nCol_ = nLegend_;
         }
         else if ( position == "bottom")
         {
-            legend_position_ = PL_POSITION_OUTSIDE | PL_POSITION_BOTTOM;
-            ncol_ = nlegend_;
+            legendPosition_ = PL_POSITION_OUTSIDE | PL_POSITION_BOTTOM;
+            nCol_ = nLegend_;
         }
         else if ( position == "left")
         {
-            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_LEFT;
-            nrow_ = nlegend_;
+            legendPosition_ = PL_POSITION_INSIDE | PL_POSITION_LEFT;
+            nRow_ = nLegend_;
         }
         else if ( position == "right")
         {
-            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT;
-            nrow_ = nlegend_;
+            legendPosition_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT;
+            nRow_ = nLegend_;
         }
         else if ( position == "left_top")
         {
-            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_LEFT | PL_POSITION_TOP;
-            nrow_ = nlegend_;
+            legendPosition_ = PL_POSITION_INSIDE | PL_POSITION_LEFT | PL_POSITION_TOP;
+            nRow_ = nLegend_;
         }
         else if ( position == "right_top")
         {
-            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT | PL_POSITION_TOP;
-            nrow_ = nlegend_;
+            legendPosition_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT | PL_POSITION_TOP;
+            nRow_ = nLegend_;
         }        
         else if ( position == "left_bottom")
         {
-            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_LEFT | PL_POSITION_BOTTOM;
-            nrow_ = nlegend_;
+            legendPosition_ = PL_POSITION_INSIDE | PL_POSITION_LEFT | PL_POSITION_BOTTOM;
+            nRow_ = nLegend_;
         }
         else if ( position == "right_bottom")
         {
-            legend_position_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT | PL_POSITION_BOTTOM;
-            nrow_ = nlegend_;
+            legendPosition_ = PL_POSITION_INSIDE | PL_POSITION_RIGHT | PL_POSITION_BOTTOM;
+            nRow_ = nLegend_;
         }
         else
         {
-            ncol_ = nlegend_;
+            nCol_ = nLegend_;
         }
     }
 
+    void plotInterface::setOutputFormat(std::string outputFormat)
+    {
+        outputFormat_ = outputFormat;
+        for (unsigned int i=0;i<onScreenOutputFormats_.size();i++)
+        {
+            if ( outputFormat_ == onScreenOutputFormats_[i])
+            {
+                isOnFile_ = false;
+                break;
+            }
+        }
+    }
+
+
+    void plotInterface::setOutputFileName(std::string fileName)
+    {
+        fileName_ = fileName;
+    }
+
+
     void plotInterface::legend()
     {
-        is_legend_ = true;
+        isLegend_ = true;
 
-        text_colors_.resize(nlegend_);
+        textColors_.resize(nLegend_);
 
-        line_colors_.resize(nlegend_);
-        line_styles_.resize(nlegend_);
-        line_widths_.resize(nlegend_);
+        lineColors_.resize(nLegend_);
+        lineStyles_.resize(nLegend_);
+        lineWidths_.resize(nLegend_);
 
-        opt_array_.resize(nlegend_);
+        optArray_.resize(nLegend_);
 
-        for (unsigned int i = 0; i < nlegend_; i++)
+        for (unsigned int i = 0; i < nLegend_; i++)
         {
-            text_colors_[i] = 1;
-            line_colors_[i] = i + 2;
-            line_styles_[i] = 1;
-            line_widths_[i] = 1.0;
-            opt_array_[i] = PL_LEGEND_LINE;
+            textColors_[i] = 1;
+            lineColors_[i] = i + 2;
+            lineStyles_[i] = 1;
+            lineWidths_[i] = 1.0;
+            optArray_[i] = PL_LEGEND_LINE;
         }
     }
 
@@ -202,20 +228,27 @@ namespace ASALI
         pls = new plstream();
 
         // Change Background Color
-        pls->scolbg(bg_color_[0], bg_color_[1], bg_color_[2]);
+        pls->scolbg(bgColor_[0], bgColor_[1], bgColor_[2]);
 
         // Set Text Color
-        pls->scol0(1, text_color_[0], text_color_[1], text_color_[2]);
+        pls->scol0(1, textColor_[0], textColor_[1], textColor_[2]);
+
+        // Create output format
+        pls->sdev(outputFormat_.c_str());
+        if (!fileName_.empty() && isOnFile_)
+        {
+            pls->sfnam(fileName_.c_str());
+        }
 
         // Parse and process command line arguments
         pls->init();
 
         // Create a labelled box to hold the plot.
         pls->env(xmin_, xmax_, ymin_, ymax_, 0, 0);
-        pls->lab(xlabel_.c_str(), ylabel_.c_str(), title_.c_str());
+        pls->lab(xLabel_.c_str(), yLabel_.c_str(), title_.c_str());
 
         // Plot the data that was prepared above.
-        for (unsigned int i = 0; i < nlegend_; i++)
+        for (unsigned int i = 0; i < nLegend_; i++)
         {
             PLFLT x[x_[i].size()];
             this->convertToPLFLT(x_[i], x);
@@ -226,39 +259,39 @@ namespace ASALI
             pls->line(x_[i].size(), x, y);
         }
 
-        if (is_legend_ == true)
+        if (isLegend_ == true)
         {
-            PLINT opt_array[nlegend_];
-            this->convertToPLINT(opt_array_, opt_array);
+            PLINT opt_array[nLegend_];
+            this->convertToPLINT(optArray_, opt_array);
 
-            std::vector<const char*> texts(nlegend_);
-            for (unsigned int i = 0; i < nlegend_; i++)
+            std::vector<const char*> texts(nLegend_);
+            for (unsigned int i = 0; i < nLegend_; i++)
             {
-                texts[i] = legend_text_[i].c_str();
+                texts[i] = legendText_[i].c_str();
             }
-            PLINT text_colors[nlegend_];
-            this->convertToPLINT(text_colors_, text_colors);
+            PLINT text_colors[nLegend_];
+            this->convertToPLINT(textColors_, text_colors);
 
-            PLINT line_colors[nlegend_];
-            this->convertToPLINT(line_colors_, line_colors);
-            PLINT line_styles[nlegend_];
-            this->convertToPLINT(line_styles_, line_styles);
-            PLFLT line_widths[nlegend_];
-            this->convertToPLFLT(line_widths_, line_widths);
+            PLINT line_colors[nLegend_];
+            this->convertToPLINT(lineColors_, line_colors);
+            PLINT line_styles[nLegend_];
+            this->convertToPLINT(lineStyles_, line_styles);
+            PLFLT line_widths[nLegend_];
+            this->convertToPLFLT(lineWidths_, line_widths);
 
-            pls->legend(&legend_width,              //p_legend_width
-                        &legend_height,             //p_legend_height
-                        opt_base_,                  //opt
-                        legend_position_,           //position
+            pls->legend(&legendWidth_,              //p_legend_width
+                        &legendHeight_,             //p_legend_height
+                        optBase_,                  //opt
+                        legendPosition_,           //position
                         0.05,                       //x
                         0.05,                       //y
                         0.1,                        //plot_width
                         0,                          //bg_color
                         0,                          //bb_color
                         1,                          //bb_style
-                        nrow_,                      //nrow
-                        ncol_,                      //ncolumn
-                        nlegend_,                   //nlegend
+                        nRow_,                      //nrow
+                        nCol_,                      //ncolumn
+                        nLegend_,                   //nlegend
                         opt_array,                  //opt_array
                         1.0,                        //text_offset
                         1.0,                        //text_scale

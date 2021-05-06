@@ -35,6 +35,8 @@ namespace ASALI
         void setTextColor(int r, int b, int g);
         void setBackgroundColor(int r, int b, int g);
         void setLegendPosition(const std::string position);
+        void setOutputFormat(const std::string outputFormat);
+        void setOutputFileName(const std::string fileName);
         void legend();
         void show();
 
@@ -52,37 +54,41 @@ namespace ASALI
 
         plstream *pls;
 
-        int nsize_;
-        int nlegend_;
+        int nSize_;
+        int nLegend_;
 
-        std::string xlabel_;
-        std::string ylabel_;
+        std::string xLabel_;
+        std::string yLabel_;
         std::string title_;
+        std::string outputFormat_;
+        std::string fileName_;
 
-        bool is_legend_;
+        bool isLegend_;
+        bool isOnFile_;
 
-        PLINT legend_position_;
-        PLINT opt_base_;
-        PLINT ncol_;
-        PLINT nrow_;
+        PLINT legendPosition_;
+        PLINT optBase_;
+        PLINT nCol_;
+        PLINT nRow_;
 
         PLFLT xmax_;
         PLFLT xmin_;
         PLFLT ymax_;
         PLFLT ymin_;
-        PLFLT legend_width;
-        PLFLT legend_height;
+        PLFLT legendWidth_;
+        PLFLT legendHeight_;
 
-        std::vector<std::string> legend_text_;
+        std::vector<std::string> legendText_;
+        std::vector<std::string> onScreenOutputFormats_;
 
-        std::vector<int> text_colors_;
-        std::vector<int> line_colors_;
-        std::vector<int> line_styles_;
-        std::vector<int> opt_array_;
-        std::vector<int> text_color_;
-        std::vector<int> bg_color_;
+        std::vector<int> textColors_;
+        std::vector<int> lineColors_;
+        std::vector<int> lineStyles_;
+        std::vector<int> optArray_;
+        std::vector<int> textColor_;
+        std::vector<int> bgColor_;
 
-        std::vector<double> line_widths_;
+        std::vector<double> lineWidths_;
 
         std::vector<std::vector<double>> x_;
         std::vector<std::vector<double>> y_;

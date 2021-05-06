@@ -26,6 +26,8 @@ int main(int argc, char **argv)
     asaliplot->setYlabel("Temperature [K]");
     asaliplot->setTitle("Rebu is the best");
     asaliplot->setLegendPosition("left");
+    asaliplot->setOutputFormat("pngcairo");
+    asaliplot->setOutputFileName("rebu.png");
     asaliplot->legend();
     asaliplot->show();
 

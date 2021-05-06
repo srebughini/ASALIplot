@@ -13,4 +13,4 @@ sudo apt-get install libplplot-dev plplot-driver-cairo
 ## Things to do
 * For asali we should select the background of asali light color
 * For asali we should select the text of asali dark color
-* Fix legend
+* Add figures effect to make plotting easier
