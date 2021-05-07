@@ -26,6 +26,7 @@ namespace ASALI
     public:
         plotInterface();
 
+        void newFigure();
         void setData(std::vector<double> x, std::vector<double> y, std::string label);
         void setXlimits(double xmin, double xmax);
         void setYlimits(double ymin, double ymax);
@@ -45,6 +46,8 @@ namespace ASALI
     private:
         void convertToPLFLT(std::vector<double> v, PLFLT *p);
         void convertToPLINT(std::vector<int> v, PLINT *p);
+        void plot(plstream *pls, int figIndex);
+        void initialize(plstream *pls, int figIndex);
 
         double minElement(const std::vector<double> v);
         double maxElement(const std::vector<double> v);
@@ -52,46 +55,51 @@ namespace ASALI
         int minElement(const std::vector<int> v);
         int maxElement(const std::vector<int> v);
 
-        plstream *pls;
+        int nFig_;
 
-        int nSize_;
-        int nLegend_;
+        std::vector<plstream *> pls;
 
-        std::string xLabel_;
-        std::string yLabel_;
-        std::string title_;
-        std::string outputFormat_;
-        std::string fileName_;
+        std::vector<int> nSize_;
+        std::vector<int> nLegend_;
 
-        bool isLegend_;
-        bool isOnFile_;
-
-        PLINT legendPosition_;
-        PLINT optBase_;
-        PLINT nCol_;
-        PLINT nRow_;
-
-        PLFLT xmax_;
-        PLFLT xmin_;
-        PLFLT ymax_;
-        PLFLT ymin_;
-        PLFLT legendWidth_;
-        PLFLT legendHeight_;
-
-        std::vector<std::string> legendText_;
+        std::vector<std::string> xLabel_;
+        std::vector<std::string> yLabel_;
+        std::vector<std::string> title_;
+        std::vector<std::string> outputFormat_;
+        std::vector<std::string> fileName_;
         std::vector<std::string> onScreenOutputFormats_;
+        std::vector<std::string> legendTextForSingleFigure_;
 
-        std::vector<int> textColors_;
-        std::vector<int> lineColors_;
-        std::vector<int> lineStyles_;
-        std::vector<int> optArray_;
-        std::vector<int> textColor_;
-        std::vector<int> bgColor_;
+        std::vector<bool> isLegend_;
+        std::vector<bool> isOnFile_;
 
-        std::vector<double> lineWidths_;
+        std::vector<PLINT> legendPosition_;
+        std::vector<PLINT> optBase_;
+        std::vector<PLINT> nCol_;
+        std::vector<PLINT> nRow_;
 
-        std::vector<std::vector<double>> x_;
-        std::vector<std::vector<double>> y_;
+        std::vector<PLFLT> xmax_;
+        std::vector<PLFLT> xmin_;
+        std::vector<PLFLT> ymax_;
+        std::vector<PLFLT> ymin_;
+        std::vector<PLFLT> legendWidth_;
+        std::vector<PLFLT> legendHeight_;
+
+        std::vector<std::vector<std::string>> legendText_;
+
+        std::vector<std::vector<int>> textColors_;
+        std::vector<std::vector<int>> lineColors_;
+        std::vector<std::vector<int>> lineStyles_;
+        std::vector<std::vector<int>> optArray_;
+        std::vector<std::vector<int>> textColor_;
+        std::vector<std::vector<int>> bgColor_;
+
+        std::vector<std::vector<double>> lineWidths_;
+        std::vector<std::vector<double>> xForSingleFig_;
+        std::vector<std::vector<double>> yForSingleFig_;
+
+        std::vector<std::vector<std::vector<double>>> x_;
+        std::vector<std::vector<std::vector<double>>> y_;
     };
 }
 #endif

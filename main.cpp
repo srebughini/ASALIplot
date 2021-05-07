@@ -19,18 +19,24 @@ int main(int argc, char **argv)
     }
     
     ASALI::plotInterface *asaliplot = new ASALI::plotInterface();
-    asaliplot->setData(x, y1, "rebu1");
-    asaliplot->setData(x, y2, "rebu2");
-    asaliplot->setData(x, y3, "rebu3");
-    asaliplot->setXlabel("Time [s]");
-    asaliplot->setYlabel("Temperature [K]");
-    asaliplot->setTitle("Rebu is the best");
-    asaliplot->setLegendPosition("left");
-    asaliplot->setOutputFormat("pngcairo");
-    asaliplot->setOutputFileName("rebu.png");
-    asaliplot->legend();
+    for (unsigned int i=0;i<3;i++)
+    {
+        asaliplot->newFigure();
+        asaliplot->setData(x, y1, "rebu1");
+        asaliplot->setData(x, y2, "rebu2");
+        asaliplot->setData(x, y3, "rebu3");
+        asaliplot->setXlabel("Time [s]");
+        asaliplot->setYlabel("Temperature [K]");
+        asaliplot->setTitle("Rebu is the best");
+        asaliplot->setLegendPosition("left");
+        asaliplot->setOutputFormat("qtwidget");
+        asaliplot->legend();
+    }
+    //asaliplot->setOutputFileName("rebu.png");
+
     asaliplot->show();
 
     delete asaliplot;
+
     return 0;
 }
