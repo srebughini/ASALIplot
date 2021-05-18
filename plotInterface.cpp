@@ -260,7 +260,7 @@ namespace ASALI
 
         for (unsigned int i=0; i<=nFig_; i++)
         {
-            delete pls[i];
+            delete pls[i];            
         }
 
         pls.clear();
