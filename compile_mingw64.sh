@@ -1,0 +1,4 @@
+rm -f asali.exe
+
+g++ main.cpp plotInterface.cpp -o asali.exe -DASALI_ON_WINDOWS=1 -I. `pkg-config plplot --cflags --libs` -lplplotcxx
+#g++ main.cpp plotInterface.cpp -o asali.exe -DASALI_ON_WINDOWS=1 -I. -IC:/Users/rebughinis/Documents/myCode/msys64/mingw64/include/plplot -I/mingw64/include/freetype2 -DHPDF_DLL -I/mingw64/lib/wx/include/msw-unicode-3.0 -I/mingw64/include/wx-3.0 -D_FILE_OFFSET_BITS=64 -DWXUSINGDLL -D__WXMSW__ -DUNICODE -D_UNICODE -LC:/Users/rebughinis/Documents/myCode/msys64/mingw64/lib -lplplot -lgd.dll -lpng.dll -lz.dll -ljpeg.dll -ltcl.dll -ltk.dll -L/mingw64/x86_64-w64-mingw32/lib -pipe -lwx_baseu-3.0.dll -lwx_mswu_core-3.0.dll -lhpdf.dll -lgdi32 -lcomdlg32 -lcomctl32 -lshp.dll -lfreetype.dll -lcsirocsa -lcsironn -lqhull -lqsastime -L/mingw64/lib/gcc/x86_64-w64-mingw32/10.2.0 -lstdc++.dll -lpthread.dll -ladvapi32 -lshell32 -luser32 -lmingw32 -lgcc_s -lgcc -lmoldname -lmingwex -lkernel32 -lplplotcxx

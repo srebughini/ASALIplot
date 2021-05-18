@@ -2,10 +2,19 @@
 
 namespace ASALI
 {
+    #if ASALI_ON_WINDOWS == 1
+    plotInterface::plotInterface() : nFig_(-1),
+                                     onScreenOutputFormats_({"wingcc", "wingid"})
+    {
+        _putenv_s("PLPLOT_LIB", "share/plplot5.15.0");
+        _putenv_s("WININSTALLDIR", ".");
+    }
+    #else
     plotInterface::plotInterface() : nFig_(-1),
                                      onScreenOutputFormats_({"xcairo", "wxwidgets", "qtwidget"})
     {
     }
+    #endif
 
     double plotInterface::maxElement(const std::vector<double> v)
     {
